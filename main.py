@@ -405,5 +405,6 @@ try:
 except KeyboardInterrupt:
     print("Game Ended")
     print(f"Points earned: {points}")
+    t.sleep(5)
 
 
