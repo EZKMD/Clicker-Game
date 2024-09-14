@@ -1,6 +1,6 @@
 import time as t
 import random as r
-from bossFightClassTesting import dracula 
+from bossFightClassTesting import dracula, cthulhu
 
 
 
@@ -78,7 +78,7 @@ def storyShop(points):
     """)
         option = input("")
         if option == '1':
-            dracula.bossFight(damage, gemMultiplier, inventory)
+            cthulhu.bossFight(damage, gemMultiplier, inventory, 'clicker')
             hasFightOccurred = True
             break
         elif option == '2':
@@ -136,7 +136,7 @@ def checkStats():
 
 inventory = {
     'Cookies 🍪':0,
-    'Gems 💎':500,
+    'Gems 💎':100,
 }
 
 def showInventory():
@@ -197,11 +197,10 @@ def gemShop(inventory, gemMultiplier):
     """)
         option = input("")
         if option in ['1', '2', '3', '4', '5']:
-            childPadding = paddingCalculation(points, 'child')
+            childPadding = paddingCalculation(inventory['Gems 💎'], 'child')
             x = GemArray[int(option)-1]
             ratePadding = paddingCalculation(x.rate, 'adult')
             pricePadding = paddingCalculation(x.price, 'adult')
-            dashing = paddingCalculation(inventory['Gems 💎'], 'misc')
             
             print(f''' 
               ______________________________________________
@@ -211,10 +210,8 @@ def gemShop(inventory, gemMultiplier):
             |==== Price: {x.price}{pricePadding}====|/|
             |_____________________________________________|/
                  |Gems ⟡: {inventory['Gems 💎']}{childPadding}|/
-                  ‾‾‾‾‾‾‾‾{dashing}
+                  ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
                     ''')
-            print(f"Dashes: {len(dashing)}")
-            print(f"Padding: {len(childPadding)}")
             choice = input('Would you like to purchase? Y/n')
             if choice == 'Y' and inventory['Gems 💎'] >= x.price:
                 inventory['Gems 💎'] -= x.price
@@ -233,8 +230,8 @@ def gemShop(inventory, gemMultiplier):
 
 
 
-def pssveClkrMenu(clickMultiplier, points): # Still need to implement passive clicking; make sure to use threading
-    while True:            # or async processes
+def pssveClkrMenu(clickMultiplier, points): 
+    while True:            
         adultPadding = paddingCalculation(points, 'adult')
         print(f"""
                    ___________________________________________
@@ -258,7 +255,7 @@ def pssveClkrMenu(clickMultiplier, points): # Still need to implement passive cl
             x = ClkrArray[int(option)-1]
             ratePadding = paddingCalculation(x.rate, 'adult')
             pricePadding = paddingCalculation(x.price, 'adult')
-            dashing = paddingCalculation(points, 'misc')
+
             print(f''' 
               ______________________________________________
              ///////////////////////////////////////////////|     
@@ -267,10 +264,8 @@ def pssveClkrMenu(clickMultiplier, points): # Still need to implement passive cl
             |==== Price: {x.price}{pricePadding}====|/|
             |_____________________________________________|/
                  |Points: {points}{childPadding}|/
-                  ‾‾‾‾‾‾‾‾{dashing}
+                  ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
                     ''')
-            print(f"Dashes: {len(dashing)}")
-            print(f"Padding: {len(childPadding)}")
             choice = input('Would you like to purchase? Y/n')
             if choice == 'Y' and points >= x.price:
                 points -= x.price
@@ -332,13 +327,13 @@ def help():
     print('- ? for help')
 
 
-#help()
+help()
 
 t.sleep(1)
 
 print("CLICK!")
 
-points = 10000
+points = 10
 
       
 try:
@@ -355,19 +350,27 @@ try:
             checkStats()
         elif option.lower() == 'i':
             showInventory()
+        elif option.lower() == 'troubleshoot':
+            inventory['Gems 💎'] += int(input('Add amount of gems'))
+            points += int(input('Add amount of points'))
         elif option.lower() == 's':
             while True:
-                print(f'''
-            ===================SHOP===================
-            ==== [1] Clicker Shop                 ====
-            ==== [2] Cookie: 100                  ====
-            ==== [3] Gem Shop                     ====
-            ==== [4] Damage Shop                  ====
-            ==== [5] Story Shop                   ====
-            ==========================================
-                Points: {points}                     
-            ==========================================
-                    ''')
+
+                print(f"""
+                   ___________________________________________
+                  ////////////////////////////////////////////|
+                 /////////////////////////////////////////////|
+                |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾SHOP‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|//|
+                |==== [1] Clicker Shop                 ====|//|
+                |==== [2] Cookie: 100                  ====|//|
+                |==== [3] Gem Shop                     ====|//|
+                |==== [4] Damage Shop                  ====|//|
+                |==== [5] Story Shop                   ====|//|     
+                |__________________________________________|//|
+                |                                          |//|
+                |     Points: {points}{padding}|//
+                |__________________________________________|/
+    """)
                 
                 option = input("")
                 if option == "1":
