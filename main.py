@@ -1,23 +1,142 @@
 import time as t
 import random as r
+from bossFightClassTesting import dracula 
+
 
 
 
     
 clickMultiplier = 1  
 gemMultiplier = 1
+damage = 1
 
 # Functions and classes
 
-def checkMultipliers():
+def paddingCalculation(points, key):
+    padding = []
+    lengthOfPoints = len(str(points))
+    if key == 'adult':
+        paddingValue = 29 - lengthOfPoints
+        for i in range(0, paddingValue):
+            padding.append(" ")
+    elif key == 'child':
+        paddingValue = 12 - lengthOfPoints
+        for i in range(0, paddingValue):
+            padding.append(" ")
+    else:
+        paddingValue = 18 - lengthOfPoints
+        for i in range(0, paddingValue):
+            padding.append("‾")
+    padding = ''.join(padding)
+    return padding
+
+def diceRoll(points):
+    print("You roll two 6 sided dice if they are the same value, you win 1000 points!! \n")
+    t.sleep(1)
+    x = r.randint(1,6)
+    y = r.randint(1,6)
+    if x == y:
+        print(f'You got {x} and {y} so you WIN')
+        points += 1000
+    else:
+        print(f'You got {x} and {y} so you lose :(')
+    return points
+
+def numberGuess(points): 
+    min = int(input('Enter minimum: '))
+    max = int(input('Enter maximum: '))
+    x = r.randint(min, max)
+    guess = int(input('Guess number: '))
+    amountGained = 100 * (max-min)
+    if guess == x:
+        points += amountGained
+        print(f'CORRECT +{amountGained} points')
+    else:
+        print(f'WRONG: It was {x}')
+    
+    return points
+
+
+def storyShop(points):
+    hasFightOccurred = False
+    while True:
+        padding = paddingCalculation(points, 'adult')
+        print(f"""
+                   ___________________________________________
+                  ////////////////////////////////////////////|
+                 /////////////////////////////////////////////|
+                |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾SHOP‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|//|
+                |==== [1] Boss Fight: 100              ====|//|
+                |==== [2] Roll the Dice: 10            ====|//|
+                |==== [3] Guess Number: 10             ====|//|
+                |==== [4] Riddle: 50                   ====|//|
+                |==== [5] General Knowledge: 50        ====|//|     
+                |__________________________________________|//|
+                |                                          |//|
+                |     Points: {points}{padding}|//
+                |__________________________________________|/
+    """)
+        option = input("")
+        if option == '1':
+            dracula.bossFight(damage, gemMultiplier, inventory)
+            hasFightOccurred = True
+            break
+        elif option == '2':
+            points -= 10
+            points = diceRoll(points)
+        elif option == '3':
+            points -= 10
+            points = numberGuess(points)
+        elif option.lower() == 'b':
+            break
+    return points, hasFightOccurred
+
+def damageShop(points, damage):
+    stockArray = [[1, 100], [10, 200], [25, 300], [50, 400], [100, 500]]
+    while True:
+        padding = paddingCalculation(points, 'adult')
+        print(f"""
+                   ___________________________________________
+                  ////////////////////////////////////////////|
+                 /////////////////////////////////////////////|
+                |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾SHOP‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|//|
+                |==== [1] Damage +1: 100               ====|//|
+                |==== [2] Damage +10: 200              ====|//|
+                |==== [3] Damage +25: 300              ====|//|
+                |==== [4] Damage +50: 400              ====|//|
+                |==== [5] Damage +100: 500             ====|//|     
+                |__________________________________________|//|
+                |                                          |//|
+                |     Points: {points}{padding}|//
+                |                                          |/
+                 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+    """)
+        option = input("")
+        if option in ['1', '2', '3', '4', '5']:
+            if points >= stockArray[int(option)-1][1]:
+                damage += stockArray[int(option)-1][0]
+                points -= stockArray[int(option)-1][1]
+            else:
+                print('Not enough points broke ahh')
+        elif option.lower() =='b':
+            break
+        else:
+            pass
+
+    return damage, points
+    
+
+
+def checkStats():
     print(f"""
-    Point Multiplier ({clickMultiplier})
-    Gem Multiplier ({gemMultiplier})
+    Point Multiplier (x{clickMultiplier})
+    Gem Multiplier (x{gemMultiplier})
+    Damage ({damage})
 """)
 
 inventory = {
     'Cookies 🍪':0,
-    'Gems 💎':0,
+    'Gems 💎':500,
 }
 
 def showInventory():
@@ -57,161 +176,116 @@ GemMult5 = Shop('Lvl 5', 200, 5, 10)
 ClkrArray = [pssveClkr1,pssveClkr2, pssveClkr3, pssveClkr4, pssveClkr5 ]
 GemArray = [GemMult1, GemMult2, GemMult3, GemMult4, GemMult5]
 
-def gemShop(inventory):
+def gemShop(inventory, gemMultiplier):
     while True:
+        adultPadding = paddingCalculation(inventory['Gems 💎'], 'adult')
         print(f"""
-                ===================SHOP===================
-                ==== [1] Gem Muliplier Lvl 1          ====
-                ==== [2] Gem Muliplier Lvl 2          ====
-                ==== [3] Gem Muliplier Lvl 3          ====
-                ==== [4] Gem Muliplier Lvl 4          ====
-                ==== [5] Gem Muliplier Lvl 5          ====
-                ==========================================
-                    Gems 💎: {inventory['Gems 💎']}                     
-                ==========================================
+                   ___________________________________________
+                  ////////////////////////////////////////////|
+                 /////////////////////////////////////////////|
+                |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾SHOP‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|//|
+                |==== [1] Gem Multiplier Lvl 1         ====|//|
+                |==== [2] Gem Multiplier Lvl 2         ====|//|
+                |==== [3] Gem Multiplier Lvl 3         ====|//|
+                |==== [4] Gem Multiplier Lvl 4         ====|//|
+                |==== [5] Gem Multiplier Lvl 5         ====|//|     
+                |__________________________________________|//|
+                |                                          |//|
+                |     Gems ⟡: {inventory['Gems 💎']}{adultPadding}|//
+                |                                          |/
+                 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
     """)
         option = input("")
         if option in ['1', '2', '3', '4', '5']:
+            childPadding = paddingCalculation(points, 'child')
             x = GemArray[int(option)-1]
-            print(f'''
-            ==============={x.name}==================
-            ==== Rate: x{1+(x.rate)}                ====
-            ==== Price: {x.price} 💎              ====
-            ======================================
-                    
+            ratePadding = paddingCalculation(x.rate, 'adult')
+            pricePadding = paddingCalculation(x.price, 'adult')
+            dashing = paddingCalculation(inventory['Gems 💎'], 'misc')
+            
+            print(f''' 
+              ______________________________________________
+             ///////////////////////////////////////////////|     
+            |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾{x.name}‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|/|
+            |==== Rate: x{1+(x.rate)}{ratePadding}====|/|
+            |==== Price: {x.price}{pricePadding}====|/|
+            |_____________________________________________|/
+                 |Gems ⟡: {inventory['Gems 💎']}{childPadding}|/
+                  ‾‾‾‾‾‾‾‾{dashing}
                     ''')
+            print(f"Dashes: {len(dashing)}")
+            print(f"Padding: {len(childPadding)}")
             choice = input('Would you like to purchase? Y/n')
             if choice == 'Y' and inventory['Gems 💎'] >= x.price:
                 inventory['Gems 💎'] -= x.price
-                return gemMultiplier+(1+x.rate) # Here if the operation between multiplier and the brackets is changed to a multiply (*)
+                gemMultiplier += (x.rate) # Here if the operation between multiplier and the brackets is changed to a multiply (*)
                                                 # the amount of gems drastically increases instead of if an addition is used.
             elif choice == 'Y' and inventory['Gems 💎'] < x.price:
                 print("Not enough gems \n")
 
-
-            elif choice.lower() == 'n':
-                break
             else:
                 pass
         elif option.lower() == 'b':
             break
         else:
             print('Please select a valid option, or "b" to go back \n')
+    return gemMultiplier
 
 
 
-
-
-def bossFight():
-    
-    bossHP = 100
-    HParray = ['█','█','█','█','█','█','█','█','█','█']
-    print('A WILD MONSTER HAD APPEARED!!!')
-    t.sleep(0.5)
-    choice = input('Do you wish to face it? Y/n')
-    if choice == 'Y':
-        print("""
-              __.......__
-            .-:::::::::::::-.
-          .:::''':::::::''':::.
-        .:::'     `:::'     `:::. 
-   .'\\  ::'   ^^^  `:'  ^^^   '::  /`.
-  :   \\ ::   _.__       __._   :: /   ;
- :     \\`: .' ___\\     /___ `. :'/     ; 
-:       /\\   (_|_)\\   /(_|_)   /\\       ;
-:      / .\\   __.' ) ( `.__   /. \\      ;
-:      \\ (        {   }        ) /      ; 
- :      `-(     .  ^"^  .     )-'      ;
-  `.       \\  .'<`-._.-'>'.  /       .'
-    `.      \\    \\;`.';/    /      .'
-      `._    `-._       _.-'    _.'
-       .'`-.__ .'`-._.-'`. __.-'`.
-     .'       `.         .'       `.
-   .'           `-.   .-'           `.
-""")
-        print('Defeat it within 10 seconds')
-        t.sleep(1)
-        print(f'Boss: {bossHP}hp ██████████ ')
-        print('Dmg: 1dmg/click')
-
-        x = t.time()
-
-        while t.time() < x+10 and bossHP > 0:
-            option = input("")
-            if option == '':
-                bossHP -= 1
-            else:
-                pass
-            if bossHP%10 == 0:
-                HParray.pop()
-                print(f'{bossHP}: {''.join(HParray)}')
-            else:
-                pass
-
-        if bossHP > 0:
-            print('Boss fight failed')
-        else:
-            print('☠️')
-            print('BOSS SLAIN')
-            print(f'{(5* gemMultiplier)}+ gems 💎')
-            inventory['Gems 💎'] += (5* gemMultiplier) 
-    else:
-        pass
-    
-
-
-        
-
-
-
-
-
-def specialEvent(x):
-    if x < 10:
-        bossFight()
-    else:
-        pass
-
-def pssveClkrMenu(points): # Still need to implement passive clicking; make sure to use threading
+def pssveClkrMenu(clickMultiplier, points): # Still need to implement passive clicking; make sure to use threading
     while True:            # or async processes
+        adultPadding = paddingCalculation(points, 'adult')
         print(f"""
-            ===================SHOP===================
-            ==== [1] Passive Clicker Lvl 1        ====
-            ==== [2] Passive Clicker Lvl 2        ====
-            ==== [3] Passive Clicker Lvl 3        ====
-            ==== [4] Passive Clicker Lvl 4        ====
-            ==== [5] Passive Clicker Lvl 5        ====
-            ==========================================
-                Points: {points}                     
-            ==========================================
-                            """)
+                   ___________________________________________
+                  ////////////////////////////////////////////|
+                 /////////////////////////////////////////////|
+                |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾SHOP‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|//|
+                |==== [1] Clicker Multiplier Lvl 1     ====|//|
+                |==== [2] Clicker Multiplier Lvl 2     ====|//|
+                |==== [3] Clicker Multiplier Lvl 3     ====|//|
+                |==== [4] Clicker Multiplier Lvl 4     ====|//|
+                |==== [5] Clicker Multiplier Lvl 5     ====|//|     
+                |__________________________________________|//|
+                |                                          |//|
+                |     Points: {points}{adultPadding}|//
+                |                                          |/
+                 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+    """)
         option = input("")
         if option in ['1', '2', '3', '4', '5']:
+            childPadding = paddingCalculation(points, 'child')
             x = ClkrArray[int(option)-1]
-            print(f'''
-            ==============={x.name}==================
-            ==== Rate: x{1+(x.rate)}                  ====
-            ==== Price: {x.price} points          ====
-            ======================================
-                    
+            ratePadding = paddingCalculation(x.rate, 'adult')
+            pricePadding = paddingCalculation(x.price, 'adult')
+            dashing = paddingCalculation(points, 'misc')
+            print(f''' 
+              ______________________________________________
+             ///////////////////////////////////////////////|     
+            |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾{x.name}‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|/|
+            |==== Rate: x{1+(x.rate)}{ratePadding}====|/|
+            |==== Price: {x.price}{pricePadding}====|/|
+            |_____________________________________________|/
+                 |Points: {points}{childPadding}|/
+                  ‾‾‾‾‾‾‾‾{dashing}
                     ''')
+            print(f"Dashes: {len(dashing)}")
+            print(f"Padding: {len(childPadding)}")
             choice = input('Would you like to purchase? Y/n')
             if choice == 'Y' and points >= x.price:
                 points -= x.price
-                return clickMultiplier+(1+x.rate), points # Here if the operation between multiplier and the brackets is changed to a multiply (*)
+                clickMultiplier += (1+x.rate)       # Here if the operation between multiplier and the brackets is changed to a multiply (*)
                                                   # the amount of gems drastically increases instead of if an addition is used.
             elif choice == 'Y' and points < x.price:
                 print("Not enough points \n")
 
-
-            elif choice.lower() == 'n':
-                return clickMultiplier, points
             else:
                 pass
         elif option.lower() == 'b':
-            return clickMultiplier, points
+            break
         else:
             print('Please select a valid option, or "b" to go back \n')
+    return clickMultiplier, points
 
 
 
@@ -253,44 +327,43 @@ def help():
     t.sleep(0.5)
     print('- I for inventory')
     t.sleep(0.5)
-    print('- m for multipliers')
+    print('- M for stats')
     t.sleep(0.5)
     print('- ? for help')
 
 
-help()
+#help()
 
 t.sleep(1)
 
 print("CLICK!")
 
-points = 0
+points = 10000
+
       
 try:
     while True:
-        chance1 = r.randint(0,100)
-        chance2 = r.randint(0,100)
-        if chance1 == chance2:
-            print("Success")
-            specialEvent(chance1)
+        padding = paddingCalculation(points, 'adult')        
         option = input("")
         if option == "":
-            points += (1*clickMultiplier)
+            points += (1*(clickMultiplier))
         elif option.lower() == 'q':
             print(f'Point total: {points}')
         elif option.lower() == '?':
             help()
         elif option.lower() == 'm':
-            checkMultipliers()
+            checkStats()
         elif option.lower() == 'i':
             showInventory()
         elif option.lower() == 's':
             while True:
                 print(f'''
             ===================SHOP===================
-            ==== [1] Passive Clickers             ====
+            ==== [1] Clicker Shop                 ====
             ==== [2] Cookie: 100                  ====
             ==== [3] Gem Shop                     ====
+            ==== [4] Damage Shop                  ====
+            ==== [5] Story Shop                   ====
             ==========================================
                 Points: {points}                     
             ==========================================
@@ -298,7 +371,7 @@ try:
                 
                 option = input("")
                 if option == "1":
-                    clickMultiplier, points = pssveClkrMenu(points)
+                    clickMultiplier, points = pssveClkrMenu(clickMultiplier, points)
                     
                     if option.lower == 'b':
                         break
@@ -307,8 +380,19 @@ try:
                         cookie()
                         points = points - 100
                         break
+                    else:
+                        print('Not enough points')
+                        break
                 elif option == '3':
-                    gemMultiplier = gemShop(inventory)
+                    gemMultiplier = gemShop(inventory, gemMultiplier)
+                elif option == '4':
+                    damage, points = damageShop(points, damage)
+                elif option == '5':
+                    points, hasFightOccurred = storyShop(points)
+                    if hasFightOccurred:
+                        break
+                    else:
+                        pass
                 elif option.lower() == "b":
                     break
 
