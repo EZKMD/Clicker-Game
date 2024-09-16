@@ -1,16 +1,100 @@
 import time as t
 import random as r
-from bossFightClassTesting import dracula, cthulhu
+from boss import bossArray
 
 
-
-
-    
 clickMultiplier = 1  
 gemMultiplier = 1
 damage = 1
 
-# Functions and classes
+# Functions and classes:
+def bossOptions(hasFightOccurred, points, key):
+    hasFightOccurred = False
+    while not hasFightOccurred:
+        padding = paddingCalculation(points, 'adult')
+        print(f"""
+                
+                           ___________________________________________
+                          ////////////////////////////////////////////|
+                         /////////////////////////////////////////////|
+                        |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾BOSS‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|//|
+                        |==== [1] Dracula                      ====|//|
+                        |==== [2] Cthulhu                      ====|//|
+                        |==== [3] Medusa                       ====|//|
+                        |==== [4] Banshee                      ====|//|
+                        |==== [5] Jörmungandr                  ====|//|
+                        |==== [6] Chronos                      ====|//|     
+                        |__________________________________________|//|
+                        |                                          |//|
+                        |     Points: {points}{padding}|//
+                        |__________________________________________|/
+            """)
+        if key == 'fights':
+            choice = input("")
+            if choice in ['1', '2', '3', '4', '5', '6']:
+                chosenBoss = bossArray[int(choice)-1]
+                if points >= chosenBoss.price:
+                    points = chosenBoss.bossFight(damage, gemMultiplier, inventory, 'clicker', points)
+                    hasFightOccurred = True
+                    return hasFightOccurred, points
+                else:
+                    print('Not enough points\n')
+                    t.sleep(0.25)
+            elif choice.lower() == 'b':
+                return hasFightOccurred, points
+            else:
+                print("Enter a valid option or b to exit")
+        elif key == 'stats/lore':
+            choice = input("")
+            if choice in ['1', '2', '3', '4', '5', '6']:
+                chosenBoss = bossArray[int(choice)-1]
+                chosenBoss.showStats()
+                random = input("Enter to exit")
+                return hasFightOccurred, points
+            elif choice.lower() == 'b':
+                return hasFightOccurred, points
+            else:
+                print("Enter a valid option or b to exit")
+        else:
+            print('Fail')
+
+
+        
+        
+    
+
+def bossMenu(points, hasFightOccurred):
+    while not hasFightOccurred:
+        padding = paddingCalculation(points, 'adult')
+        print(f"""
+              
+                       ___________________________________________
+                      ////////////////////////////////////////////|
+                     /////////////////////////////////////////////|
+                    |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾BOSS‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|//|
+                    |==== [1] Boss Fights                  ====|//|
+                    |==== [2] Stats & Lore                 ====|//|
+                    |==== [3] Random Boss Fight            ====|//|
+                    |==== [4] #                            ====|//|
+                    |==== [5] #                            ====|//|     
+                    |__________________________________________|//|
+                    |                                          |//|
+                    |     Points: {points}{padding}|//
+                    |__________________________________________|/
+        """)
+        option = input("")
+        if option in ['1', '2', '3', '4', '5']:
+            if option == '1':
+                hasFightOccurred, points = bossOptions(hasFightOccurred, points, 'fights')
+            if option == '2':
+                bossOptions(hasFightOccurred, points, 'stats/lore')
+        elif option.lower() == 'b':
+            break
+                
+        else:
+            print("Enter a valid option, or b to go back")
+    return points, hasFightOccurred
+
 
 def paddingCalculation(points, key):
     padding = []
@@ -59,14 +143,14 @@ def numberGuess(points):
 
 def storyShop(points):
     hasFightOccurred = False
-    while True:
+    while not hasFightOccurred:
         padding = paddingCalculation(points, 'adult')
         print(f"""
                    ___________________________________________
                   ////////////////////////////////////////////|
                  /////////////////////////////////////////////|
                 |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾SHOP‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|//|
-                |==== [1] Boss Fight: 100              ====|//|
+                |==== [1] Boss Menu                    ====|//|
                 |==== [2] Roll the Dice: 10            ====|//|
                 |==== [3] Guess Number: 10             ====|//|
                 |==== [4] Riddle: 50                   ====|//|
@@ -78,9 +162,8 @@ def storyShop(points):
     """)
         option = input("")
         if option == '1':
-            cthulhu.bossFight(damage, gemMultiplier, inventory, 'clicker')
-            hasFightOccurred = True
-            break
+            points, hasFightOccurred = bossMenu(points, hasFightOccurred)
+            #cthulhu.bossFight(damage, gemMultiplier, inventory, 'clicker')
         elif option == '2':
             points -= 10
             points = diceRoll(points)
@@ -327,7 +410,7 @@ def help():
     print('- ? for help')
 
 
-help()
+#help()
 
 t.sleep(1)
 
@@ -355,7 +438,7 @@ try:
             points += int(input('Add amount of points'))
         elif option.lower() == 's':
             while True:
-
+                padding = paddingCalculation(points, 'adult')
                 print(f"""
                    ___________________________________________
                   ////////////////////////////////////////////|
